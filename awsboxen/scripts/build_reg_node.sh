@@ -51,6 +51,8 @@ pool_size = 5
 pool_recycle = 3600
 create_tables = true
 
+[nodes]
+fallback_node = http://db1.oldsync.dev.lcip.org
 
 [cef]
 use = true

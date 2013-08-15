@@ -32,27 +32,9 @@ RegSecurityGroup:
         SourceSecurityGroupName: {"Ref": "StorageSecurityGroup"}
 
 
-# Several stand-alone EC2 instances to act as storage nodes.
+# A single stand-alone EC2 instance to act as a storage node.
 
-StorageServer1:
-  Type: AWS::EC2::Instance
-  Properties:
-    InstanceType: m1.small
-    ImageId: {"Ref": "StorageServerAMI"}
-    KeyName: {"Ref": "AWSBoxDeployKey"}
-    SecurityGroups:
-      - {"Ref": "StorageSecurityGroup"}
-
-StorageServer2:
-  Type: AWS::EC2::Instance
-  Properties:
-    InstanceType: m1.small
-    ImageId: {"Ref": "StorageServerAMI"}
-    KeyName: {"Ref": "AWSBoxDeployKey"}
-    SecurityGroups:
-      - {"Ref": "StorageSecurityGroup"}
-
-StorageServer3:
+StorageServer:
   Type: AWS::EC2::Instance
   Properties:
     InstanceType: m1.small
@@ -95,14 +77,4 @@ DNSRecords:
         Type: "CNAME"
         TTL: 30
         ResourceRecords:
-          - {"Fn::GetAtt": ["StorageServer1", "PublicDnsName"]}
-      - Name: "db2.oldsync.dev.lcip.org."
-        Type: "CNAME"
-        TTL: 30
-        ResourceRecords:
-          - {"Fn::GetAtt": ["StorageServer2", "PublicDnsName"]}
-      - Name: "db3.oldsync.dev.lcip.org."
-        Type: "CNAME"
-        TTL: 30
-        ResourceRecords:
-          - {"Fn::GetAtt": ["StorageServer3", "PublicDnsName"]}
+          - {"Fn::GetAtt": ["StorageServer", "PublicDnsName"]}
