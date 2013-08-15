@@ -1,0 +1,108 @@
+
+# A single stand-alone EC2 instance running the user registration system.
+
+RegServer:
+  Type: AWS::EC2::Instance
+  Properties:
+    InstanceType: m1.small
+    ImageId: {"Ref": "RegServerAMI"}
+    KeyName: {"Ref": "AWSBoxDeployKey"}
+    SecurityGroups:
+      - {"Ref": "RegSecurityGroup"}
+
+RegSecurityGroup:
+  Type: AWS::EC2::SecurityGroup
+  Properties:
+    GroupDescription:  awsboxen security group for picl-oldsync reg
+    SecurityGroupIngress:
+      # Allow ssh from anywhere
+      - IpProtocol: "tcp"
+        FromPort: "22"
+        ToPort: "22"
+        CidrIp: "0.0.0.0/0"
+      # Allow http access from anywhere
+      - IpProtocol: "tcp"
+        FromPort: "80"
+        ToPort: "80"
+        CidrIp: "0.0.0.0/0"
+      # Allow mysql access from storage nodes, so they can authenticate
+      - IpProtocol: "tcp"
+        FromPort: "3306"
+        ToPort: "3306"
+        SourceSecurityGroupName: {"Ref": "StorageSecurityGroup"}
+
+
+# Several stand-alone EC2 instances to act as storage nodes.
+
+StorageServer1:
+  Type: AWS::EC2::Instance
+  Properties:
+    InstanceType: m1.small
+    ImageId: {"Ref": "StorageServerAMI"}
+    KeyName: {"Ref": "AWSBoxDeployKey"}
+    SecurityGroups:
+      - {"Ref": "StorageSecurityGroup"}
+
+StorageServer2:
+  Type: AWS::EC2::Instance
+  Properties:
+    InstanceType: m1.small
+    ImageId: {"Ref": "StorageServerAMI"}
+    KeyName: {"Ref": "AWSBoxDeployKey"}
+    SecurityGroups:
+      - {"Ref": "StorageSecurityGroup"}
+
+StorageServer3:
+  Type: AWS::EC2::Instance
+  Properties:
+    InstanceType: m1.small
+    ImageId: {"Ref": "StorageServerAMI"}
+    KeyName: {"Ref": "AWSBoxDeployKey"}
+    SecurityGroups:
+      - {"Ref": "StorageSecurityGroup"}
+
+StorageSecurityGroup:
+  Type: AWS::EC2::SecurityGroup
+  Properties:
+    GroupDescription:  awsboxen security group for picl-oldsync storage
+    SecurityGroupIngress:
+      # Allow ssh from anywhere
+      - IpProtocol: "tcp"
+        FromPort: "22"
+        ToPort: "22"
+        CidrIp: "0.0.0.0/0"
+      # Allow http access from anywhere
+      - IpProtocol: "tcp"
+        FromPort: "80"
+        ToPort: "80"
+        CidrIp: "0.0.0.0/0"
+
+
+# DNS Records for all the things.
+
+DNSRecords:
+  Type: AWS::Route53::RecordSetGroup
+  Properties:
+    Comment: awsboxen dns records for picl-oldsync servers
+    HostedZoneName: lcip.org.
+    RecordSets:
+      - Name: "reg.oldsync.dev.lcip.org."
+        Type: "CNAME"
+        TTL: 30
+        ResourceRecords:
+          - {"Fn::GetAtt": ["RegServer", "PublicDnsName"]}
+      - Name: "db1.oldsync.dev.lcip.org."
+        Type: "CNAME"
+        TTL: 30
+        ResourceRecords:
+          - {"Fn::GetAtt": ["StorageServer1", "PublicDnsName"]}
+      - Name: "db2.oldsync.dev.lcip.org."
+        Type: "CNAME"
+        TTL: 30
+        ResourceRecords:
+          - {"Fn::GetAtt": ["StorageServer2", "PublicDnsName"]}
+      - Name: "db3.oldsync.dev.lcip.org."
+        Type: "CNAME"
+        TTL: 30
+        ResourceRecords:
+          - {"Fn::GetAtt": ["StorageServer3", "PublicDnsName"]}
