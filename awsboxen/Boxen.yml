@@ -1,11 +1,11 @@
+TokenServer:
+  Type: AWSBoxen::BuildScript
+  Properties:
+    BaseAMI: {"Fn::FindInMap": ["RegionMap", {"Ref": "AWS::Region"}, "BaseAMI"]}
+    BuildScript: awsboxen/scripts/build_tokenserver_node.sh
+
 StorageServer:
   Type: AWSBoxen::BuildScript
   Properties:
     BaseAMI: {"Fn::FindInMap": ["RegionMap", {"Ref": "AWS::Region"}, "BaseAMI"]}
     BuildScript: awsboxen/scripts/build_storage_node.sh
-
-RegServer:
-  Type: AWSBoxen::BuildScript
-  Properties:
-    BaseAMI: {"Fn::FindInMap": ["RegionMap", {"Ref": "AWS::Region"}, "BaseAMI"]}
-    BuildScript: awsboxen/scripts/build_reg_node.sh

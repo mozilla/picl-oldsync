@@ -1,19 +1,19 @@
 
-# A single stand-alone EC2 instance running the user registration system.
+# A single stand-alone EC2 instance running the tokenserver.
 
-RegServer:
+TokenServer:
   Type: AWS::EC2::Instance
   Properties:
     InstanceType: m1.small
-    ImageId: {"Ref": "RegServerAMI"}
+    ImageId: {"Ref": "TokenServerAMI"}
     KeyName: {"Ref": "AWSBoxDeployKey"}
     SecurityGroups:
-      - {"Ref": "RegSecurityGroup"}
+      - {"Ref": "TokenSecurityGroup"}
 
-RegSecurityGroup:
+TokenSecurityGroup:
   Type: AWS::EC2::SecurityGroup
   Properties:
-    GroupDescription:  awsboxen security group for picl-oldsync reg
+    GroupDescription:  awsboxen security group for picl-oldsync tokenserver
     SecurityGroupIngress:
       # Allow ssh from anywhere
       - IpProtocol: "tcp"
@@ -25,11 +25,6 @@ RegSecurityGroup:
         FromPort: "80"
         ToPort: "80"
         CidrIp: "0.0.0.0/0"
-      # Allow mysql access from storage nodes, so they can authenticate
-      - IpProtocol: "tcp"
-        FromPort: "3306"
-        ToPort: "3306"
-        SourceSecurityGroupName: {"Ref": "StorageSecurityGroup"}
 
 
 # A single stand-alone EC2 instance to act as a storage node.
@@ -68,11 +63,11 @@ DNSRecords:
     Comment: awsboxen dns records for picl-oldsync servers
     HostedZoneName: lcip.org.
     RecordSets:
-      - Name: "reg.oldsync.dev.lcip.org."
+      - Name: "auth.oldsync.dev.lcip.org."
         Type: "CNAME"
         TTL: 30
         ResourceRecords:
-          - {"Fn::GetAtt": ["RegServer", "PublicDnsName"]}
+          - {"Fn::GetAtt": ["TokenServer", "PublicDnsName"]}
       - Name: "db1.oldsync.dev.lcip.org."
         Type: "CNAME"
         TTL: 30

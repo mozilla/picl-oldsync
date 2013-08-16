@@ -7,7 +7,7 @@ set -e
 YUM="yum --assumeyes --enablerepo=epel"
 
 $YUM update
-$YUM install python-pip mercurial
+$YUM install python-pip git mercurial
 
 # Checkout and build latest server-storage.
 
@@ -18,12 +18,25 @@ useradd syncstorage
 UDO="sudo -u syncstorage"
 
 cd /home/syncstorage
-$UDO hg clone https://hg.mozilla.org/services/server-storage
+$UDO git clone https://github.com/mozilla-services/server-storage
 cd ./server-storage
+$UDO git checkout -t origin/rfk/hawkauth
 
 $YUM install openssl-devel libmemcached-devel libevent-devel python-devel gcc
 $UDO make build
 $UDO ./bin/pip install gunicorn gevent PyMySQL pymysql_sa
+$UDO ./bin/pip install repoze.who.plugins.hawkauth
+$UDO git checkout rfk/hawkauth            # ugh, `make build` resets this.
+
+# Once that's built, we can replace its server-core dep with a tweaked version.
+
+cd ./deps
+rm -rf server-core
+git clone https://github.com/mozilla-services/server-core
+cd server-core
+git checkout -t origin/rfk/picl-tweaks
+../../bin/python setup.py develop
+cd ../../
 
 # Write the configuration files.
 
@@ -39,6 +52,28 @@ port = 5000
 [app:main]
 use = egg:SyncStorage
 configuration = file:%(here)s/sync.conf
+
+[loggers]
+keys = root
+
+[handlers]
+keys = console
+
+[formatters]
+keys = generic
+
+[logger_root]
+level = INFO
+handlers = console
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = INFO
+formatter = generic
+
+[formatter_generic]
+format = %(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s
 EOF
 chown syncstorage:syncstorage production.ini
 
@@ -54,12 +89,18 @@ pool_recycle = 3600
 reset_on_return = true
 create_tables = true
 
-[auth]
-backend = services.user.sql.SQLUser
-sqluri = pymysql://sync:syncerific@reg.oldsync.dev.lcip.org/sync
-pool_size = 5
-pool_recycle = 3600
-create_tables = false
+[who.identifiers]
+plugins = hawk
+
+[who.challengers]
+plugins = hawk
+
+[who.authenticators]
+plugins = hawk
+
+[who.plugin.hawk]
+use = repoze.who.plugins.hawkauth:make_plugin
+master_secret = SECRETKEYOHSECRETKEY
 
 [cef]
 use = true
@@ -81,6 +122,12 @@ cat > sync.ini << EOF
 working_dir=/home/syncstorage/server-storage
 cmd=bin/gunicorn_paster -k gevent -w 4 production.ini
 numprocesses = 1
+stdout_stream.class = FileStream
+stdout_stream.filename = sync.log
+stdout_stream.refresh_time = 0.5
+stdout_stream.max_bytes = 1073741824
+stdout_stream.backup_count = 3
+stderr_stream.class = StdoutStream
 EOF
 chown syncstorage:syncstorage sync.ini
 
