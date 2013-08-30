@@ -109,6 +109,7 @@ backend = tokenserver.assignment.sqlnode.SQLNodeAssignment
 sqluri = pymysql://token:tokenizationing@localhost/token
 create_tables = true
 pool_size = 5
+token_duration = 31536000
 
 [endpoints]
 sync-1.1 = {node}/1.1/{uid}
