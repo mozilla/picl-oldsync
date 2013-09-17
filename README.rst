@@ -18,3 +18,28 @@ Deploy the stack like this:
 
     $> awsboxen deploy oldsync-dev-lcip-org
 
+It will deploy two servers.  The first is the "auth" server available at:
+
+    http://auth.oldsync.dev.lcip.org
+
+This is running the "tokenserver" codebase, which is responsible for accepting
+BrowserID identity assertions and exchanging them for short-lived access
+credentials:
+
+    https://github.com/mozilla-services/tokenserver
+    http://docs.services.mozilla.com/token/index.html
+
+The second is the "storage" server available at:
+
+    http://db1.oldsync.dev.lcip.org
+
+This is running the "server-storage" codebase, the storage engine that powers
+the existing Firefox Sync service.  It uses a plugin to let users authenticate
+via Hawk using the tokenserver-provided credentials, rather than the usual
+username and password:
+
+    http://hg.mozilla.org/services/server-storage
+    http://docs.services.mozilla.com/storage/index.html
+    https://github.com/mozilla-services/repoze.who.plugins.hawkauth
+    https://github.com/mozilla-services/hawkauthlib
+
