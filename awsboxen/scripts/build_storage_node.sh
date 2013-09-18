@@ -173,7 +173,7 @@ http {
         listen       80 default;
         location / {
             if (\$request_method = 'OPTIONS') {
-                add_header 'Access-Control-Allow-Origin' '*';
+                add_header 'Access-Control-Allow-Origin' "\$http_origin";
                 add_header 'Access-Control-Allow-Credentials' 'true';
                 add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
                 add_header 'Access-Control-Max-Age' 1728000;
@@ -182,7 +182,7 @@ http {
                 add_header 'Content-Length' 0;
                 return 204;
             }
-            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Origin' "\$http_origin";
             add_header 'Access-Control-Allow-Credentials' 'true';
             add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
             add_header 'Access-Control-Max-Age' 1728000;
