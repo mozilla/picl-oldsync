@@ -141,7 +141,11 @@ stdout_stream.filename = sync.log
 stdout_stream.refresh_time = 0.5
 stdout_stream.max_bytes = 1073741824
 stdout_stream.backup_count = 3
-stderr_stream.class = StdoutStream
+stderr_stream.class = FileStream
+stderr_stream.filename = sync.err
+stderr_stream.refresh_time = 0.5
+stderr_stream.max_bytes = 1073741824
+stderr_stream.backup_count = 3
 EOF
 chown synctoken:synctoken tokenserver.ini
 
