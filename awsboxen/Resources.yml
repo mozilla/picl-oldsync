@@ -9,6 +9,19 @@ TokenServer:
     KeyName: {"Ref": "AWSBoxDeployKey"}
     SecurityGroups:
       - {"Ref": "TokenSecurityGroup"}
+    Tags:
+      - Key: "Name"
+        Value: "fxa-tokenserver"
+      - Key: "Type"
+        Value: "tokenserver"
+      - Key: "App"
+        Value: "fxa"
+      - Key: "Env"
+        Value: "dev"
+      - Key: "Owner"
+        Value: "rfkelly"
+      - Key: "Stack"
+        Value: {"Ref": "AWS::StackName"}
 
 TokenSecurityGroup:
   Type: AWS::EC2::SecurityGroup
@@ -37,6 +50,19 @@ StorageServer:
     KeyName: {"Ref": "AWSBoxDeployKey"}
     SecurityGroups:
       - {"Ref": "StorageSecurityGroup"}
+    Tags:
+      - Key: "Name"
+        Value: "fxa-syncstorage"
+      - Key: "Type"
+        Value: "syncstorage"
+      - Key: "App"
+        Value: "fxa"
+      - Key: "Env"
+        Value: "dev"
+      - Key: "Owner"
+        Value: "rfkelly"
+      - Key: "Stack"
+        Value: {"Ref": "AWS::StackName"}
 
 StorageSecurityGroup:
   Type: AWS::EC2::SecurityGroup
