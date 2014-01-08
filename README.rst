@@ -14,7 +14,7 @@ You'll need awsboxen to make this work:
 
     https://github.com/mozilla/awsboxen
 
-Deploy the stack like this:
+Clone this repo and `cd` into it, then deploy the stack like this:
 
     $> awsboxen deploy oldsync-dev-lcip-org
 
