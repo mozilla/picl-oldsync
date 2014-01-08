@@ -116,14 +116,14 @@ sync-1.1 = {node}/1.1/{uid}
 
 [browserid]
 backend = tokenserver.verifiers.RemoteVerifier
-audiences = http://auth.oldsync.dev.lcip.org
+audiences = http://auth.{"Ref":"DNSPrefix"}.dev.lcip.org
 
 EOF
 chown synctoken:synctoken ./etc/production.ini
 
 
 cat > ./etc/secrets << EOF
-http://db1.oldsync.dev.lcip.org,123456:SECRETKEYOHSECRETKEY
+http://db1.{"Ref":"DNSPrefix"}.dev.lcip.org,123456:SECRETKEYOHSECRETKEY
 EOF
 chown synctoken:synctoken ./etc/secrets
 
@@ -225,4 +225,4 @@ TOKEN_INI=/home/synctoken/tokenserver/etc/production.ini ./bin/python -c "import
 # Add WIMMS records for the known nodes in this cluster.
 # Actually it's just a single node...
 
-echo "INSERT INTO token.nodes VALUES (NULL, 'sync-1.1', 'http://db1.oldsync.dev.lcip.org', 10000, 0, 10000, 0, 0);" | mysql -u root
+echo "INSERT INTO token.nodes VALUES (NULL, 'sync-1.1', 'http://db1.{"Ref":"DNSPrefix"}.dev.lcip.org', 10000, 0, 10000, 0, 0);" | mysql -u root

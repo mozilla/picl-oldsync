@@ -33,6 +33,12 @@ The second is the "storage" server available at:
 
     http://db1.oldsync.dev.lcip.org
 
+To use a difference DNS name, you can specify the "DNSPrefix" parameter at
+deployment time so that it's something other than "oldsync".  For example:
+
+    $> awsboxen deploy -D DNSPrefix=teststack teststack-dev-lcip-org
+
+
 This is running the "server-storage" codebase, the storage engine that powers
 the existing Firefox Sync service.  It uses a plugin to let users authenticate
 via Hawk using the tokenserver-provided credentials, rather than the usual
