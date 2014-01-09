@@ -89,12 +89,12 @@ DNSRecords:
     Comment: awsboxen dns records for picl-oldsync servers
     HostedZoneName: lcip.org.
     RecordSets:
-      - Name: {"Fn::Join": [".", ["auth", {"Ref": "DNSPrefix"}, ".dev.lcip.org."]]}
+      - Name: {"Fn::Join": [".", ["auth", {"Ref": "DNSPrefix"}, "dev.lcip.org."]]}
         Type: "CNAME"
         TTL: 30
         ResourceRecords:
           - {"Fn::GetAtt": ["TokenServer", "PublicDnsName"]}
-      - Name: {"Fn::Join": [".", ["db1", {"Ref": "DNSPrefix"}, ".dev.lcip.org."]]}
+      - Name: {"Fn::Join": [".", ["db1", {"Ref": "DNSPrefix"}, "dev.lcip.org."]]}
         Type: "CNAME"
         TTL: 30
         ResourceRecords:
