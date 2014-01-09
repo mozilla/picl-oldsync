@@ -33,7 +33,7 @@ cd ./tokenserver
 $YUM install openssl-devel libmemcached-devel libevent-devel python-devel
 $YUM install gcc gcc-c++ czmq-devel zeromq
 
-$UDO make build CHANNEL=dev
+$UDO make build CHANNEL=dev TIMEOUT=600
 $UDO ./bin/pip install gunicorn PyMySQL pymysql_sa
 
 # Write the configuration files.
