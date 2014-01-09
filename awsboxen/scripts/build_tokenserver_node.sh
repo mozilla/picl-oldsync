@@ -29,12 +29,14 @@ UDO="sudo -u synctoken"
 cd /home/synctoken
 $UDO git clone https://github.com/mozilla-services/tokenserver.git
 cd ./tokenserver
+git checkout -t origin/udpate-pymysql-monkey
 
 $YUM install openssl-devel libmemcached-devel libevent-devel python-devel
 $YUM install gcc gcc-c++ czmq-devel zeromq
 
 $UDO make build CHANNEL=dev TIMEOUT=600
 $UDO ./bin/pip install gunicorn PyMySQL pymysql_sa
+git checkout udpate-pymysql-monkey
 
 # Write the configuration files.
 
