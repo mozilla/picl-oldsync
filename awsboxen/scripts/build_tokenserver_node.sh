@@ -35,7 +35,6 @@ $YUM install gcc gcc-c++ czmq-devel zeromq
 
 $UDO make build CHANNEL=dev
 $UDO ./bin/pip install gunicorn PyMySQL pymysql_sa
-$UDO ./bin/pip install https://github.com/mozilla-services/wimms/archive/master.tar.gz
 
 # Write the configuration files.
 
