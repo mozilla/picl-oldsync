@@ -29,7 +29,6 @@ UDO="sudo -u synctoken"
 cd /home/synctoken
 $UDO git clone https://github.com/mozilla-services/tokenserver.git
 cd ./tokenserver
-$UDO git checkout -t origin/picl-tweaks
 
 $YUM install openssl-devel libmemcached-devel libevent-devel python-devel
 $YUM install gcc gcc-c++ czmq-devel zeromq
@@ -37,8 +36,6 @@ $YUM install gcc gcc-c++ czmq-devel zeromq
 $UDO make build CHANNEL=dev
 $UDO ./bin/pip install gunicorn PyMySQL pymysql_sa
 $UDO ./bin/pip install https://github.com/mozilla-services/wimms/archive/master.tar.gz
-$UDO ./bin/pip install "cornice==0.11"   # XXX TODO: debug why this is needed
-$UDO git checkout picl-tweaks            # ugh, `make build` resets this.
 
 # Write the configuration files.
 
